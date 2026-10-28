@@ -1,0 +1,16 @@
+
+import boto3
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
+table = boto3.resource('dynamodb').Table('Time2')
+
+def lambda_handler(event, context):
+    now = datetime.now(ZoneInfo("Asia/Kolkata")).isoformat()
+
+    table.put_item(Item={
+        'id': now,
+        'time': now
+    })
+
+    return "Success"
