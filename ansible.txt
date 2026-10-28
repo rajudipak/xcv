@@ -1,0 +1,50 @@
+sudo apt update
+
+sudo apt install ansible -y
+
+ansible --version
+
+mkdir ans
+
+cd ans
+
+Create the inventory file:
+nano hosts
+
+localhost ansible_connection=local
+
+Save using Ctrl + O, press Enter, then Ctrl + X.
+
+nano play.yml
+
+---
+- name: Configure localhost
+  hosts: localhost
+  become: yes
+
+  tasks:
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Create web page
+      copy:
+        content: "Welcome to Ansible Practical"
+        dest: /var/www/html/index.html
+
+    - name: Start Nginx
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+
+Save using Ctrl + O, Enter, and Ctrl + X.
+
+ansible-playbook -i hosts play.yml
+
+nginx -v
+
+cat /var/www/html/index.html
