@@ -1,0 +1,36 @@
+
+pipeline {
+    agent any
+
+    triggers {
+        pollSCM('H/5 * * * *')
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Build successful'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Test successful'
+            }
+        }
+    }
+}
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Jenkins CI</title>
+</head>
+<body>
+    <h1>Welcome to Jenkins CI new interference eojrr0w90e </h1>
+    <p>Continuous Integration using Jenkins and GitHub.</p>
+</body>
+</html>
