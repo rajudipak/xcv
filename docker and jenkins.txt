@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ASD Practical</title>
+</head>
+<body>
+    <h1>ASD Practical Successful!</h1>
+    <p>Deployed using Jenkins and Docker.</p>
+</body>
+</html>
+
+
+
+
+
+FROM nginx:alpine
+COPY index.html /usr/share/nginx/html/index.html
+EXPOSE 80
+
+
+pipeline {
+    agent any
+
+    triggers {
+        pollSCM('H/5 * * * *')
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Build successful'
+                bat 'docker build -t vipul .'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Test successful'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                bat 'docker stop vipulcon || exit 0'
+                bat 'docker rm vipulcon || exit 0'
+                bat 'docker run -d --name vipulcon -p 8081:80 vipul'
+            }
+        }
+    }
+}
