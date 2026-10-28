@@ -1,0 +1,89 @@
+ASD Practical: Install Terraform and Provision an EC2 Instance
+Step 1 — Download Terraform
+On the other laptop:
+1. Open the official Terraform download page: Download Terraform.
+2. Select Windows and AMD64 (64-bit).
+3. Download the ZIP file.
+4. Extract it. Inside, you'll find terraform.exe.
+
+
+Step 2 — Set up Terraform
+1. Create a folder named C:\Terraform.
+2. Move terraform.exe into that folder.
+3. Add C:\Terraform to the Windows Path environment variable:
+   - Search Windows for Edit the system environment variables.
+   - Click Environment Variables.
+   - Under your user variables, select Path → Edit → New.
+   - Enter C:\Terraform and save all windows.
+4. Open a new Command Prompt.
+
+terraform -version
+
+Step 3 — Install AWS CLI
+Download and install the official AWS CLI for Windows.
+
+After installation, open a new CMD and run:
+
+aws --version
+
+aws configure
+
+aws sts get-caller-identity
+
+mkdir C:\Sanjay
+
+cd C:\Sanjay
+
+notepad main.tf
+
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 6.0"
+    }
+  }
+}
+
+provider "aws" {
+  region = "us-east-1"
+}
+
+data "aws_ami" "ubuntu" {
+  most_recent = true
+  owners      = ["099720109477"]
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "architecture"
+    values = ["x86_64"]
+  }
+}
+
+resource "aws_instance" "demo" {
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = "t3.micro"
+
+  tags = {
+    Name = "Sanjay"
+  }
+}
+
+
+terraform init
+
+terraform validate
+
+terraform plan
+
+terraform apply
+
+terraform show
+
+terraform destroy
+
