@@ -1,0 +1,69 @@
+
+
+
+mkdir C:\airflow
+
+cd C:\airflow
+
+curl -LfO https://airflow.apache.org/docs/apache-airflow/stable/docker-compose.yaml
+
+notepad .env
+
+AIRFLOW_UID=50000       
+
+docker compose up airflow-init
+
+notepad docker-compose.yaml
+
+
+Change:
+"8080:8080"
+
+to:
+"8083:8080"
+
+docker compose up -d
+
+mkdir C:\airflow\dags
+
+notepad C:\airflow\dags\date_time.py
+
+import pendulum
+from datetime import datetime
+from zoneinfo import ZoneInfo
+from airflow.sdk import dag, task
+
+@dag(
+    dag_id="date_time",
+    schedule="30 9 * * 3",
+    start_date=pendulum.datetime(2026, 10, 26, tz="Asia/Kolkata"),
+    catchup=False
+)
+def date_time():
+
+    @task
+    def show_date_time():
+        print(datetime.now(ZoneInfo("Asia/Kolkata")))
+
+    show_date_time()
+
+date_time()
+
+
+
+docker compose ps
+
+http://localhost:8083
+
+
+login - airflow
+pass - airflow
+
+cd C:\airflow
+
+docker compose down
+
+cd C:\airflow
+
+
+docker compose up -d

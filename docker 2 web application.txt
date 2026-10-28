@@ -1,0 +1,40 @@
+<html>
+<body>
+    <h1>Shopping Cart</h1>
+    <p>Headphones - Rs. 999</p>
+    <p>Watch - Rs. 1499</p>
+    <p>Total - Rs. 2498</p>
+    <a href="index.html">Back to Home</a>
+</body>
+</html>
+
+
+
+
+
+
+<html>
+<body>
+    <h1>Jayy Shop</h1>
+    <h2>Products</h2>
+    <p>Headphones - Rs. 999</p>
+    <p>Watch - Rs. 1499</p>
+    <a href="cart.html">Go to Cart</a>
+</body>
+</html>
+
+
+
+FROM nginx:alpine
+COPY site/ /usr/share/nginx/html/  
+EXPOSE 80
+
+commands;-
+docker build -t vipul .
+docker images
+docker run -d -p 8087:80 --name rohan-shop vipul
+docker ps 
+docker ps -a
+docker stop rohan-shop
+docker ps -a
+docker rm rohan-shop

@@ -1,0 +1,158 @@
+Step 1: Start Docker Desktop
+1. Open Docker Desktop.
+2. Wait for the Docker engine to start.
+3. Open Command Prompt (CMD).
+Step 2: Create the Airflow folder
+mkdir C:\airflow
+cd C:\airflow
+
+
+Step 3: Download the Airflow configuration
+curl -LfO https://airflow.apache.org/docs/apache-airflow/stable/docker-compose.yaml
+
+
+Step 4: Create the environment file
+notepad .env
+
+
+Paste:
+AIRFLOW_UID=50000
+
+
+Save and close Notepad. If necessary, select Save as type: All Files to ensure the filename is .env.
+Step 5: Initialize Airflow
+docker compose up airflow-init
+
+
+Wait for initialization to finish.
+Step 6: Change the port to 8083
+We changed the port because port 8080 was already occupied.
+notepad docker-compose.yaml
+
+
+Find:
+ports:
+  - "8080:8080"
+
+
+Change to:
+ports:
+  - "8083:8080"
+
+
+Save and close Notepad.
+Step 7: Start the Airflow server
+docker compose up -d
+
+
+Check the containers:
+docker compose ps
+
+
+Wait until the relevant Airflow services are running and healthy.
+Step 8: Open the Airflow web interface
+Open this URL in your browser:
+Airflow Web InterfaceDefault credentials, if unchanged:
+Username: airflow
+Password: airflow
+
+
+Step 9: Create the DAG folder
+mkdir C:\airflow\dags
+
+
+If the folder already exists, continue to the next step.
+Step 10: Create the Python DAG file
+notepad C:\airflow\dags\date_time.py
+
+
+Paste the following complete code:
+import pendulumfrom datetime import datetimefrom zoneinfo import ZoneInfofrom airflow.sdk import dag, task@dag(    dag_id="date_time",    schedule="30 9 * * 3",    start_date=pendulum.datetime(2026, 10, 26, tz="Asia/Kolkata"),    catchup=False)def date_time():    @task    def show_date_time():        print(datetime.now(ZoneInfo("Asia/Kolkata")))    show_date_time()date_time()
+
+
+
+Save and close Notepad.
+Step 11: Verify the file
+dir C:\airflow\dags
+
+
+Confirm that date_time.py appears in the output.
+
+If the DAG is not visible, check whether the Docker container can see the file:
+docker compose exec airflow-dag-processor ls -la /opt/airflow/dags
+
+
+If the file is missing inside Docker, check the volumes section in docker-compose.yaml to ensure the local dags folder is mounted to /opt/airflow/dags.
+Step 12: Enable the DAG
+1. Return to the Airflow web interface.
+2. Refresh the DAGs page.
+3. Find date_time.
+4. Turn its toggle ON.
+Step 13: Execute the DAG manually
+1. Open the date_time DAG.
+2. Click Trigger DAG.
+3. Open the latest DAG run.
+4. Select the show_date_time task.
+5. Open Logs.
+Our successful output was:
+2026-10-26 13:05:50.779538+05:30
+
+
+This confirms that the task printed the date and time in Indian Standard Time.
+Step 14: Verify the schedule
+The schedule is:
+schedule="30 9 * * 3"
+
+
+
+Expression	Meaning
+30	Minute 30
+9	Hour 9 AM
+*	Every day of the month
+*	Every month
+3	Wednesday
+
+The DAG uses the Asia/Kolkata timezone. It is configured to run every Wednesday at 9:30 AM IST.
+
+A manual trigger tests the task immediately. The scheduled run happens separately at the next scheduled time, provided Airflow is running.
+Step 15: Stop Airflow
+When the practical is complete, run:
+cd C:\airflow
+docker compose down
+
+
+To start Airflow again later:
+cd C:\airflow
+docker compose up -d
+
+
+
+
+
+
+
+
+
+python code :-
+
+
+import pendulum
+from datetime import datetime
+from zoneinfo import ZoneInfo
+from airflow.sdk import dag, task
+
+@dag(
+    dag_id="date_time",
+    schedule="30 9 * * 3",
+    start_date=pendulum.datetime(2026, 10, 26, tz="Asia/Kolkata"),
+    catchup=False
+)
+def date_time():
+
+    @task
+    def show_date_time():
+        print(datetime.now(ZoneInfo("Asia/Kolkata")))
+
+    show_date_time()
+
+date_time()

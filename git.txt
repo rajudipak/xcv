@@ -1,0 +1,29 @@
+mkdir GitExperiment
+cd GitExperiment
+git init
+
+git config user.name "Arya"
+git config user.email "your@email.com"
+
+echo "Hello Git" > file.txt
+
+git add .
+git commit -m "Initial commit"
+
+git checkout -b feature
+
+echo "New change in file" >> file.txt
+
+git diff
+
+git add .
+git commit -m "Feature commit"
+
+git checkout main
+git merge feature
+
+git remote add origin https://github.com/YOUR-USERNAME/YOUR-REPOSITORY.git
+
+git push -u origin main
+
+git pull origin main
